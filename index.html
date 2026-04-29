@@ -410,9 +410,11 @@ visuals.innerHTML = "";
 
 if(answer === lesson.correct) {
 feedback.innerHTML = lesson.correctMsg;
+feedback.style.color = "lime";
 nextBtn.style.display = "block";
 } else {
 feedback.innerHTML = lesson.wrongMsg;
+feedback.style.color = "red";
 }
 
 lesson.animation();
