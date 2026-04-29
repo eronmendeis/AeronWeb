@@ -66,6 +66,14 @@
       transform: scale(1.02);
     }
 
+    #backBtn {
+      background: orange;
+    }
+
+    #backBtn:hover {
+      background: darkorange;
+    }
+
     #feedback {
       margin-top: 15px;
       font-size: 18px;
@@ -188,6 +196,9 @@
     </div>
 
     <button id="nextBtn">Next Lesson ➜</button>
+  </div>
+
+    <button id="backBtn">←</button>
   </div>
 
 </div>
@@ -384,6 +395,7 @@ const feedback = document.getElementById("feedback");
 const visuals = document.getElementById("visuals");
 const nextBtn = document.getElementById("nextBtn");
 const progressBar = document.getElementById("progressBar");
+const backBtn = document.getElementById("backBtn");  
 
 function loadLesson() {
 const lesson = lessons[currentLesson];
@@ -447,6 +459,13 @@ visuals.appendChild(screen);
 
 nextBtn.addEventListener("click", () => {
 currentLesson++;
+
+backBtn.addEventListener("click", () => {
+  if(currentLesson > 0) {
+    currentLesson--;
+    loadLesson();
+  }
+});
 
 if(currentLesson < lessons.length) {
 loadLesson();
