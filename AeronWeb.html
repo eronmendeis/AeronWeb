@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Interactive Academy</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: white;
+      line-height: 1.6;
+    }
+
+    header {
+      text-align: center;
+      padding: 20px;
+      background: rgba(0,0,0,0.3);
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.08);
+      padding: 25px;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+
+    h1, h2 {
+      color: #00e5ff;
+    }
+
+    h3 {
+      color: #ffd54f;
+    }
+
+    pre {
+      background: #111;
+      padding: 15px;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 8px;
+      background: #00bcd4;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #0097a7;
+      transform: scale(1.02);
+    }
+
+    #feedback {
+      margin-top: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      min-height: 60px;
+    }
+
+    #animationArea {
+      margin-top: 20px;
+      min-height: 220px;
+      background: rgba(0,0,0,0.25);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .screen {
+      background: black;
+      color: lime;
+      padding: 15px;
+      border-radius: 10px;
+      min-height: 100px;
+      font-family: monospace;
+      text-align: left;
+      white-space: pre-line;
+    }
+
+    .shape {
+      width: 50px;
+      height: 50px;
+      margin: 10px;
+      display: inline-block;
+      animation: pop 0.7s ease;
+    }
+
+    .circle {
+      border-radius: 50%;
+      background: yellow;
+    }
+
+    .square {
+      background: cyan;
+    }
+
+    .triangle {
+      width: 0;
+      height: 0;
+      border-left: 25px solid transparent;
+      border-right: 25px solid transparent;
+      border-bottom: 50px solid pink;
+      background: none;
+    }
+
+    .progress {
+      width: 100%;
+      background: #333;
+      border-radius: 10px;
+      margin: 20px 0;
+      height: 20px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: limegreen;
+      border-radius: 10px;
+      transition: width 0.5s;
+    }
+
+    #nextBtn {
+      display: none;
+      background: green;
+    }
+
+    #nextBtn:hover {
+      background: darkgreen;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes moveSide {
+      0% { transform: translateX(-150px); }
+      100% { transform: translateX(150px); }
+    }
+
+    .moving {
+      animation: moveSide 1s alternate infinite;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Python Interactive Academy</h1>
+  <p>Detailed lessons • Practice tests • Real visual demonstrations</p>
+</header>
+
+<div class="container">
+
+  <div class="progress">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <div class="card">
+    <h2 id="lessonTitle"></h2>
+    <div id="lessonContent"></div>
+
+    <h3>Practice Test</h3>
+    <div id="testContent"></div>
+
+    <div id="feedback"></div>
+
+    <div id="animationArea">
+      <h3>Visual Demonstration</h3>
+      <div id="visuals"></div>
+    </div>
+
+    <button id="nextBtn">Next Lesson ➜</button>
+  </div>
+
+</div>
+
+<script>
+const lessons = [
+
+/* ================= PRINT LESSONS ================= */
+{
+title: "1. Print Basics",
+content: `
+<p><b>print()</b> displays text, numbers, or results on the screen.</p>
+<p>Think of it like Python speaking to the user.</p>
+<pre>print("Hello World")</pre>
+<p>This shows exactly: Hello World</p>
+`,
+question: `<p>What appears on screen?</p><pre>print("Python")</pre>`,
+answers: ["Python", "print", "Error"],
+correct: "Python",
+correctMsg: "Correct! Python displays text inside quotation marks.",
+wrongMsg: "Incorrect. print() shows what is inside quotes.",
+animation: () => animateScreen("Python")
+},
+
+{
+title: "2. Print with Numbers",
+content: `
+<p>print() can also display numbers.</p>
+<pre>print(25)</pre>
+<p>Numbers do not need quotation marks.</p>
+<p>If quotes are used, it becomes text instead.</p>
+`,
+question: `<p>What appears?</p><pre>print(50)</pre>`,
+answers: ["50", "\"50\"", "Error"],
+correct: "50",
+correctMsg: "Correct! Numbers print directly.",
+wrongMsg: "Incorrect. Python displays the number 50.",
+animation: () => animateScreen("50")
+},
+
+{
+title: "3. Print with Variables",
+content: `
+<p>You can print stored values using variables.</p>
+<pre>name = "John"
+print(name)</pre>
+<p>Python prints the VALUE, not the variable name.</p>
+`,
+question: `<p>What appears?</p><pre>x = "Code"
+print(x)</pre>`,
+answers: ["x", "Code", "Error"],
+correct: "Code",
+correctMsg: "Correct! Variables store values.",
+wrongMsg: "Incorrect. Python prints the stored value.",
+animation: () => animateScreen("Code")
+},
+
+/* ================= VARIABLES ================= */
+{
+title: "4. Variables Basics",
+content: `
+<p>Variables store data for later use.</p>
+<pre>age = 15</pre>
+<p>Now Python remembers age as 15.</p>
+`,
+question: `<p>What does this print?</p><pre>age = 15
+print(age)</pre>`,
+answers: ["age", "15", "Error"],
+correct: "15",
+correctMsg: "Correct! Variables hold values.",
+wrongMsg: "Incorrect. Python prints 15.",
+animation: () => animateScreen("15")
+},
+
+/* ================= LOOPS ================= */
+{
+title: "5. For Loop",
+content: `
+<p><b>For loops</b> repeat code a specific number of times.</p>
+<pre>for i in range(3):
+    print("*")</pre>
+<p>range(3) means 0,1,2 → 3 repetitions.</p>
+`,
+question: `<p>How many times will * appear?</p><pre>for i in range(3):
+    print("*")</pre>`,
+answers: ["2", "3", "4"],
+correct: "3",
+correctMsg: "Correct! The loop repeats 3 times.",
+wrongMsg: "Incorrect. range(3) means 3 loops.",
+animation: () => animateLoop(3, "circle")
+},
+
+{
+title: "6. While Loop",
+content: `
+<p><b>While loops</b> repeat as long as a condition is true.</p>
+<pre>x = 1
+while x <= 3:
+    print(x)
+    x += 1</pre>
+<p>This continues until x becomes 4.</p>
+`,
+question: `<p>How many times will this loop?</p><pre>x = 1
+while x <= 2:</pre>`,
+answers: ["1", "2", "3"],
+correct: "2",
+correctMsg: "Correct! x = 1 then 2.",
+wrongMsg: "Incorrect. It runs twice.",
+animation: () => animateLoop(2, "square")
+},
+
+{
+title: "7. Nested Loop",
+content: `
+<p><b>Nested loops</b> are loops inside loops.</p>
+<p>This creates repeated patterns.</p>
+<pre>for i in range(2):
+    for j in range(2):
+        print("*")</pre>
+<p>Total: 4 outputs.</p>
+`,
+question: `<p>How many total prints?</p>`,
+answers: ["2", "4", "6"],
+correct: "4",
+correctMsg: "Correct! 2 × 2 = 4",
+wrongMsg: "Incorrect. Nested loops multiply repetitions.",
+animation: () => animateLoop(4, "triangle")
+},
+
+/* ================= CONDITIONAL STATEMENTS ================= */
+{
+title: "8. If Statement",
+content: `
+<p><b>If</b> checks if something is true.</p>
+<pre>x = 10
+if x > 5:
+    print("Yes")</pre>
+`,
+question: `<p>What appears?</p><pre>x = 10
+if x > 5:
+    print("Yes")</pre>`,
+answers: ["Yes", "No", "Error"],
+correct: "Yes",
+correctMsg: "Correct! The condition is true.",
+wrongMsg: "Incorrect. 10 is greater than 5.",
+animation: () => animateConditional(true)
+},
+
+{
+title: "9. If-Else Statement",
+content: `
+<p><b>Else</b> runs when the if condition is false.</p>
+<pre>x = 2
+if x > 5:
+    print("Yes")
+else:
+    print("No")</pre>
+`,
+question: `<p>What appears?</p>`,
+answers: ["Yes", "No", "Nothing"],
+correct: "No",
+correctMsg: "Correct! Since x is not greater than 5.",
+wrongMsg: "Incorrect. Else runs.",
+animation: () => animateConditional(false)
+},
+
+{
+title: "10. Elif Statement",
+content: `
+<p><b>elif</b> checks another condition if the first one is false.</p>
+<pre>score = 85
+if score >= 90:
+    print("A")
+elif score >= 80:
+    print("B")</pre>
+<p>Since 85 is >=80, Python prints B.</p>
+`,
+question: `<p>What appears?</p>`,
+answers: ["A", "B", "C"],
+correct: "B",
+correctMsg: "Correct! elif checks second condition.",
+wrongMsg: "Incorrect. Score fits B.",
+animation: () => animateScreen("B")
+}
+
+];
+
+let currentLesson = 0;
+
+const lessonTitle = document.getElementById("lessonTitle");
+const lessonContent = document.getElementById("lessonContent");
+const testContent = document.getElementById("testContent");
+const feedback = document.getElementById("feedback");
+const visuals = document.getElementById("visuals");
+const nextBtn = document.getElementById("nextBtn");
+const progressBar = document.getElementById("progressBar");
+
+function loadLesson() {
+const lesson = lessons[currentLesson];
+
+lessonTitle.innerHTML = lesson.title;
+lessonContent.innerHTML = lesson.content;
+
+let html = lesson.question;
+lesson.answers.forEach(answer => {
+html += `<button onclick="checkAnswer('${answer}')">${answer}</button>`;
+});
+
+testContent.innerHTML = html;
+feedback.innerHTML = "";
+visuals.innerHTML = "";
+nextBtn.style.display = "none";
+
+progressBar.style.width = ((currentLesson) / lessons.length) * 100 + "%";
+}
+
+function checkAnswer(answer) {
+const lesson = lessons[currentLesson];
+visuals.innerHTML = "";
+
+if(answer === lesson.correct) {
+feedback.innerHTML = lesson.correctMsg;
+nextBtn.style.display = "block";
+} else {
+feedback.innerHTML = lesson.wrongMsg;
+}
+
+lesson.animation();
+}
+
+function animateScreen(text) {
+visuals.innerHTML = `<div class="screen">${text}</div>`;
+}
+
+function animateLoop(times, shape) {
+for(let i=0; i<times; i++) {
+setTimeout(() => {
+let div = document.createElement("div");
+div.className = `shape ${shape} moving`;
+visuals.appendChild(div);
+}, i * 500);
+}
+}
+
+function animateConditional(result) {
+let div = document.createElement("div");
+div.className = `shape ${result ? "circle" : "square"}`;
+visuals.appendChild(div);
+
+let screen = document.createElement("div");
+screen.className = "screen";
+screen.innerText = result ? "YES" : "NO";
+visuals.appendChild(screen);
+}
+
+nextBtn.addEventListener("click", () => {
+currentLesson++;
+
+if(currentLesson < lessons.length) {
+loadLesson();
+} else {
+progressBar.style.width = "100%";
+document.querySelector(".card").innerHTML = `
+<h2>Course Complete!</h2>
+<p>You finished all Python beginner lessons.</p>
+<p>You now learned:</p>
+<ul>
+<li>Print Statements</li>
+<li>Variables</li>
+<li>Loops (for, while, nested)</li>
+<li>Conditionals (if, else, elif)</li>
+</ul>
+<button onclick="location.reload()">Restart Course</button>
+`;
+}
+});
+
+loadLesson();
+</script>
+
+</body>
+</html>
