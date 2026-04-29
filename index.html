@@ -1,8 +1,10 @@
 <!DOCTYPE html>
+<html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Python Interactive Academy</title>
+
   <style>
     body {
       margin: 0;
@@ -32,13 +34,8 @@
       box-shadow: 0 0 15px rgba(0,0,0,0.3);
     }
 
-    h1, h2 {
-      color: #00e5ff;
-    }
-
-    h3 {
-      color: #ffd54f;
-    }
+    h1, h2 { color: #00e5ff; }
+    h3 { color: #ffd54f; }
 
     pre {
       background: #111;
@@ -72,6 +69,15 @@
 
     #backBtn:hover {
       background: #0097a7;
+    }
+
+    #nextBtn {
+      display: none;
+      background: green;
+    }
+
+    #nextBtn:hover {
+      background: darkgreen;
     }
 
     #feedback {
@@ -110,14 +116,8 @@
       animation: pop 0.7s ease;
     }
 
-    .circle {
-      border-radius: 50%;
-      background: yellow;
-    }
-
-    .square {
-      background: cyan;
-    }
+    .circle { border-radius: 50%; background: yellow; }
+    .square { background: cyan; }
 
     .triangle {
       width: 0;
@@ -125,7 +125,6 @@
       border-left: 25px solid transparent;
       border-right: 25px solid transparent;
       border-bottom: 50px solid pink;
-      background: none;
     }
 
     .progress {
@@ -144,13 +143,8 @@
       transition: width 0.5s;
     }
 
-    #nextBtn {
-      display: none;
-      background: green;
-    }
-
-    #nextBtn:hover {
-      background: darkgreen;
+    .moving {
+      animation: moveSide 1s alternate infinite;
     }
 
     @keyframes pop {
@@ -162,12 +156,9 @@
       0% { transform: translateX(-150px); }
       100% { transform: translateX(150px); }
     }
-
-    .moving {
-      animation: moveSide 1s alternate infinite;
-    }
   </style>
 </head>
+
 <body>
 
 <header>
@@ -196,17 +187,14 @@
     </div>
 
     <button id="nextBtn">Next Lesson ➜</button>
-  </div>
-
-    <button id="backBtn">←</button>
+    <button id="backBtn">← Back</button>
   </div>
 
 </div>
 
+  
 <script>
 const lessons = [
-
-/* ================= PRINT LESSONS ================= */
 {
 title: "1. Print Basics",
 content: `
@@ -386,6 +374,7 @@ animation: () => animateScreen("B")
 
 ];
 
+  
 let currentLesson = 0;
 
 const lessonTitle = document.getElementById("lessonTitle");
@@ -394,96 +383,69 @@ const testContent = document.getElementById("testContent");
 const feedback = document.getElementById("feedback");
 const visuals = document.getElementById("visuals");
 const nextBtn = document.getElementById("nextBtn");
+const backBtn = document.getElementById("backBtn");
 const progressBar = document.getElementById("progressBar");
-const backBtn = document.getElementById("backBtn");  
 
 function loadLesson() {
-const lesson = lessons[currentLesson];
+  const lesson = lessons[currentLesson];
 
-lessonTitle.innerHTML = lesson.title;
-lessonContent.innerHTML = lesson.content;
+  lessonTitle.innerHTML = lesson.title;
+  lessonContent.innerHTML = lesson.content;
 
-let html = lesson.question;
-lesson.answers.forEach(answer => {
-html += `<button onclick="checkAnswer('${answer}')">${answer}</button>`;
-});
+  let html = lesson.question;
+  lesson.answers.forEach(answer => {
+    html += `<button onclick="checkAnswer('${answer}')">${answer}</button>`;
+  });
 
-testContent.innerHTML = html;
-feedback.innerHTML = "";
-visuals.innerHTML = "";
-nextBtn.style.display = "none";
+  testContent.innerHTML = html;
+  feedback.innerHTML = "";
+  visuals.innerHTML = "";
+  nextBtn.style.display = "none";
 
-progressBar.style.width = ((currentLesson) / lessons.length) * 100 + "%";
+  progressBar.style.width =
+    ((currentLesson + 1) / lessons.length) * 100 + "%";
 }
 
 function checkAnswer(answer) {
-const lesson = lessons[currentLesson];
-visuals.innerHTML = "";
+  const lesson = lessons[currentLesson];
+  visuals.innerHTML = "";
 
-if(answer === lesson.correct) {
-feedback.innerHTML = lesson.correctMsg;
-feedback.style.color = "lime";
-nextBtn.style.display = "block";
-} else {
-feedback.innerHTML = lesson.wrongMsg;
-feedback.style.color = "red";
-}
+  if (answer === lesson.correct) {
+    feedback.innerHTML = lesson.correctMsg;
+    feedback.style.color = "lime";
+    nextBtn.style.display = "block";
+  } else {
+    feedback.innerHTML = lesson.wrongMsg;
+    feedback.style.color = "red";
+  }
 
-lesson.animation();
+  lesson.animation();
 }
 
 function animateScreen(text) {
-visuals.innerHTML = `<div class="screen">${text}</div>`;
+  visuals.innerHTML = `<div class="screen">${text}</div>`;
 }
-
-function animateLoop(times, shape) {
-for(let i=0; i<times; i++) {
-setTimeout(() => {
-let div = document.createElement("div");
-div.className = `shape ${shape} moving`;
-visuals.appendChild(div);
-}, i * 500);
-}
-}
-
-function animateConditional(result) {
-let div = document.createElement("div");
-div.className = `shape ${result ? "circle" : "square"}`;
-visuals.appendChild(div);
-
-let screen = document.createElement("div");
-screen.className = "screen";
-screen.innerText = result ? "YES" : "NO";
-visuals.appendChild(screen);
-}
-
-nextBtn.addEventListener("click", () => {
-currentLesson++;
 
 backBtn.addEventListener("click", () => {
-  if(currentLesson > 0) {
+  if (currentLesson > 0) {
     currentLesson--;
     loadLesson();
   }
 });
 
-if(currentLesson < lessons.length) {
-loadLesson();
-} else {
-progressBar.style.width = "100%";
-document.querySelector(".card").innerHTML = `
-<h2>Course Complete!</h2>
-<p>You finished all Python beginner lessons.</p>
-<p>You now learned:</p>
-<ul>
-<li>Print Statements</li>
-<li>Variables</li>
-<li>Loops (for, while, nested)</li>
-<li>Conditionals (if, else, elif)</li>
-</ul>
-<button onclick="location.reload()">Restart Course</button>
-`;
-}
+nextBtn.addEventListener("click", () => {
+  currentLesson++;
+
+  if (currentLesson < lessons.length) {
+    loadLesson();
+  } else {
+    progressBar.style.width = "100%";
+    document.querySelector(".card").innerHTML = `
+      <h2>Course Complete!</h2>
+      <p>You finished all Python lessons.</p>
+      <button onclick="location.reload()">Restart</button>
+    `;
+  }
 });
 
 loadLesson();
